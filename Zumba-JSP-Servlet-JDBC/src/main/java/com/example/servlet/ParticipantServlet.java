@@ -1,8 +1,8 @@
 package com.example.servlet;
 import com.example.dao.ParticipantDAO;
-import com.example.dao.ParticipantDAOImpl;
 import com.example.dao.BatchDAO;
 import com.example.dao.BatchDAOImpl;
+import com.example.dao.ParticipantDAOImpl;
 import com.example.model.Participant;
 import com.example.model.Batch;
 
@@ -52,7 +52,7 @@ public class ParticipantServlet extends HttpServlet{
             }
 
             // default: list all participants
-            List<Participant> participants = participantDAO.getAllParticipant();
+            List<Participant> participants = participantDAO.getAllParticipants();
             req.setAttribute("listParticipant", participants);
             req.getRequestDispatcher("/listParticipants.jsp")
                     .forward(req, resp);
@@ -70,23 +70,22 @@ public class ParticipantServlet extends HttpServlet{
             String name = req.getParameter("name");
             String phone = req.getParameter("phone");
             String email = req.getParameter("email");
-            int batch_id = Integer.parseInt(req.getParameter("batch_id"));
-            //String batchId = req.getParameter("batch");
+            String batchIdStr = req.getParameter("batchId");
 
             if ("update".equals(action)) {
                 int id = Integer.parseInt(req.getParameter("id"));
-                Participant participant = new Participant(id, name, phone, email, batch_id);
-                if (batch_id != null && !batch_id) {
-                    Batch batch = batchDAO.getBatch(Integer.parseInt(String.valueOf(batchId)));
-                    participant.setBatchesName(batch.getName());
+                Participant participant = new Participant(id, name, phone, email);
+                if (batchIdStr != null && !batchIdStr.isEmpty()) {
+                    Batch batch = batchDAO.getBatch(Integer.parseInt(batchIdStr));
+                    participant.setBatch(batch);
                 }
                 participantDAO.updateParticipant(participant);
             } else {
                 // covers both "insert" and (if missing) any other case
-                Participant participant = new Participant(name, phone, email, batch_id);
-                if (batchid != null && !batchid.isEmpty()) {
-                    Batch batch = batchDAO.getBatch(Integer.parseInt(String.valueOf(batch_id)));
-                    participant.setBatch_id(batch.getBatch_id());
+                Participant participant = new Participant(name, phone, email);
+                if (batchIdStr != null && !batchIdStr.isEmpty()) {
+                    Batch batch = batchDAO.getBatch(Integer.parseInt(batchIdStr));
+                    participant.setBatch(batch);
                 }
                 participantDAO.addParticipant(participant);
             }

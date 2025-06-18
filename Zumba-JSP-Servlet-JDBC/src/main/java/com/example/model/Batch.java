@@ -4,7 +4,11 @@ public class Batch {
     private int id;
     private String name, description;
 
-    public Batch() { }
+    public Batch() {
+        this.id = 0;
+        this.name = "";
+        this.description = "";
+    }
 
     public Batch(String name, String description) {
         this.name = name;

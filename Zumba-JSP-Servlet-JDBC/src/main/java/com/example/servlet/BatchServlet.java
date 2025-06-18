@@ -74,7 +74,4 @@ public class BatchServlet extends HttpServlet{
         }
     }
 
-
-
-
 }

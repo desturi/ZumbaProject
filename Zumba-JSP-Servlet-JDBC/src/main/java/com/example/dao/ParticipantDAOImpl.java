@@ -10,7 +10,6 @@ public class ParticipantDAOImpl implements ParticipantDAO{
     private final String jdbcURL = "jdbc:sqlite:/Users/deepa/BackendCapstoneProjects/zumba.db";
     private final BatchDAO batchDAO = new BatchDAOImpl();
 
-    //addParticipant function
     @Override
     public void addParticipant(Participant participant) throws SQLException {
         String sql = "INSERT INTO participant(name, phone, email, batch_id) VALUES(?,?,?,?)";
@@ -19,52 +18,46 @@ public class ParticipantDAOImpl implements ParticipantDAO{
             ps.setString(1, participant.getName());
             ps.setString(2, participant.getPhone());
             ps.setString(3, participant.getEmail());
-            ps.setInt(4, participant.getBatch_id());
+            ps.setObject(3, participant.getBatch() != null ? participant.getBatch().getClass() : null); //check this line
             ps.executeUpdate();
-
-             String participantBatch = participant.getName();
-                Integer batchId = null;
-                if (participantBatch != null && !participantBatch.isEmpty()) {
-                    List<Batch> batches = batchDAO.getAllBatches();
-                    for (Batch cat : batches) {
-                        if (cat.getName().equals(participantBatch)) {
-                            batchId = cat.getId();
-                            break;
-                        }
-                    }
-                }
-                ps.setObject(3, batchId);
-                ps.executeUpdate();
-            }
-       }
+        }
     }
 
-    //getAllParticipant function
     @Override
     public List<Participant> getAllParticipants() throws SQLException {
         System.out.println(">>> getAllParticipants() called");
         List<Participant> list = new ArrayList<>();
-        String sql = "SELECT id,name,phone,email,batch_id FROM Participant";
+        String sql = "SELECT p.id, p.name, p.phone, p.email, p.batch_id, b.name as batch_name, b.description as batch_description " +
+                "FROM participants p " +
+                "LEFT JOIN batches b ON p.batch_id = b.id";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              Statement stmt = c.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                list.add(new Participant(
+                Batch batch = null;
+                if (rs.getObject("batch_id") != null) {
+                    batch = new Batch(
+                            rs.getInt("batch_id"),
+                            rs.getString("batch_name"),
+                            rs.getString("batch_description")
+                    );
+                }
+                Participant participant = new Participant(
                         rs.getInt("id"),
                         rs.getString("name"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        rs.getInt("batch_id")
-                ));
+                        batch == null ? 0 : batch.getId() //getId was suggested and I added
+                );
+                list.add(participant);
             }
         }
-        for (Participant b : list) {
-            System.out.println(b.getName() + " by " + b.getPhone() + " by " + b.getEmail() + " by " + b.getBatch_id());
+        for (Participant p : list) {
+            System.out.println(p.getName() + " by " + p.getPhone() + " by " + p.getEmail());
         }
         return list;
     }
 
-    //deleteParticipant function
     @Override
     public void deleteParticipant(int id) throws SQLException {
         String sql = "DELETE FROM participants WHERE id = ?";
@@ -75,36 +68,44 @@ public class ParticipantDAOImpl implements ParticipantDAO{
         }
     }
 
-    //updateParticipant function
     @Override
     public boolean updateParticipant(Participant participant) throws SQLException {
-        String sql = "UPDATE books SET title = ?, author = ? WHERE id = ?";
+        String sql = "UPDATE participants SET name = ?, phone = ?, email = ?, batch_id = ? WHERE id = ?";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              PreparedStatement stmt = c.prepareStatement(sql)) {
             stmt.setString(1, participant.getName());
             stmt.setString(2, participant.getPhone());
             stmt.setString(3, participant.getEmail());
             stmt.setInt(4, participant.getBatch_id());
-
-            return stmt.executeUpdate() > 0;
+           return stmt.executeUpdate() > 0;
         }
     }
 
-    //getParticipant function
     @Override
     public Participant getParticipant(int id) throws SQLException {
-        String sql = "SELECT id, name, phone, email, bath_id FROM books WHERE id = ?";
+        String sql = "SELECT p.id, p.name, p.phone, p.email, p.batch_id, b.name as batch_name, b.description as batch_description " +
+                "FROM participants p " +
+                "LEFT JOIN batches b ON p.batch_id = b.id " +
+                "WHERE p.id = ?";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    Batch batch = null;
+                    if (rs.getObject("batch_id") != null) {
+                        batch = new Batch(
+                                rs.getInt("batch_id"),
+                                rs.getString("batch_name"),
+                                rs.getString("batch_description")
+                        );
+                    }
                     return new Participant(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getString("phone"),
                             rs.getString("email"),
-                            rs.getInt("batch_id")
+                            batch == null ? 0 : batch.getId() //getId was suggested and I added
                     );
                 }
                 return null;
@@ -112,6 +113,34 @@ public class ParticipantDAOImpl implements ParticipantDAO{
         }
     }
 
-
-
+    @Override
+    public List<Participant> getParticipantByBatch(int batchId) throws SQLException {
+        List<Participant> list = new ArrayList<>();
+        String sql = "SELECT p.id, p.name, p.phone, p.email, p.batch_id, b.name as batch_name, b.description as batch_description " +
+                "FROM participant p " +
+                "LEFT JOIN batches b ON p.batch_id = b.id " +
+                "WHERE p.batch_id = ?";
+        try (Connection c = DriverManager.getConnection(jdbcURL);
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, batchId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Batch batch = new Batch(
+                            rs.getInt("batch_id"),
+                            rs.getString("batch_name"),
+                            rs.getString("batch_description")
+                    );
+                    Participant participant = new Participant(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("phone"),
+                            rs.getString("email"),
+                            batch.getId() //getId was suggested and I added
+                    );
+                    list.add(participant);
+                }
+            }
+        }
+        return list;
+    }
 }

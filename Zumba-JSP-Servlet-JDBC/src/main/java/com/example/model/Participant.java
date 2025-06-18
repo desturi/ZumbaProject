@@ -5,8 +5,7 @@ public class Participant {
    private int id;
    private String name, phone, email;
    private int batch_id;
-
-   public Participant() { }
+   private Batch batch;
 
     public Participant(String name, String phone, String email) {
         this.name = name;
@@ -34,6 +33,10 @@ public class Participant {
         this.phone = phone;
         this.email = email;
         this.batch_id = batch_id;
+    }
+
+    public Participant(Batch batch) {
+        this.batch = batch;
     }
 
     public int getId() {
@@ -64,6 +67,8 @@ public class Participant {
         return email;
     }
 
+
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -76,5 +81,11 @@ public class Participant {
         this.batch_id = batch_id;
     }
 
+    public Batch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(Batch batch) {
+    }
 
 }

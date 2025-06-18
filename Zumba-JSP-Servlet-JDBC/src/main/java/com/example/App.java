@@ -39,8 +39,7 @@ public class App {
         // 4) Start!
         System.out.println("Tomcat starting");
         tomcat.start();
-        System.out.println("Tomcat started successfully. Visit http://localhost:"
-                + port + contextPath + "/");
+        System.out.println(STR."Tomcat started successfully. Visit http://localhost:\{port}\{contextPath}/");
         tomcat.getServer().await();
     }
 
