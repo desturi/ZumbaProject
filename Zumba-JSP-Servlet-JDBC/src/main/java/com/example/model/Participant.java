@@ -36,12 +36,10 @@ public class Participant {
     }
 
     public Participant(Batch batch) {
-
         this.batch = batch;
     }
 
     public int getId() {
-
         return id;
     }
 

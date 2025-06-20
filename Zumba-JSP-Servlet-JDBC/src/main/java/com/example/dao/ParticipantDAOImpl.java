@@ -18,7 +18,7 @@ public class ParticipantDAOImpl implements ParticipantDAO{
             ps.setString(1, participant.getName());
             ps.setString(2, participant.getPhone());
             ps.setString(3, participant.getEmail());
-            ps.setObject(3, participant.getBatch() != null ? participant.getBatch().getId() : null);
+            ps.setObject(4, participant.getBatch() != null ? participant.getBatch().getId() : null);
             ps.executeUpdate();
         }
     }
@@ -79,7 +79,7 @@ public class ParticipantDAOImpl implements ParticipantDAO{
             stmt.setString(3, participant.getEmail());
             stmt.setObject(4, participant.getBatch() != null ? participant.getBatch().getId() : null);
             stmt.setInt(5, participant.getId());
-           return stmt.executeUpdate() > 0;
+            return stmt.executeUpdate() > 0;
         }
     }
 

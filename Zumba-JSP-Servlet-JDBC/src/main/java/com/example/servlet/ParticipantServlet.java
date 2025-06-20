@@ -96,5 +96,4 @@ public class ParticipantServlet extends HttpServlet{
             throw new ServletException("Database error in ParticipantServlet", e);
         }
     }
-
 }
