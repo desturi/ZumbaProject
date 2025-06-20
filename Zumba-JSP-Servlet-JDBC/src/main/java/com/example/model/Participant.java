@@ -36,11 +36,13 @@ public class Participant {
     }
 
     public Participant(Batch batch) {
+
         this.batch = batch;
     }
 
     public int getId() {
-       return id;
+
+        return id;
     }
 
     public void setId(int id) {
@@ -67,8 +69,6 @@ public class Participant {
         return email;
     }
 
-
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -86,6 +86,8 @@ public class Participant {
     }
 
     public void setBatch(Batch batch) {
+        this.batch = batch;
+        this.batch_id = batch != null ? batch.getId() : 0;
     }
 
 }

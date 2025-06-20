@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 public class BatchDAOImpl implements BatchDAO{
-    private final String jdbcURL = "jdbc:sqlite:/Users/deepa/BackendCapstoneProjects/zumba.db";
+    private final String jdbcURL = "jdbc:sqlite:zumba.db";
 
     //addBatch
     @Override

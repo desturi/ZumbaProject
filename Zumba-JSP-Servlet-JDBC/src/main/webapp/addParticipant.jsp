@@ -109,7 +109,7 @@
       <label for="name">Name</label>
       <input
         id="name" type="text" name="name" required
-        value="<%= editing ? participant.getTitle() : "" %>"/>
+        value="<%= editing ? participant.getName() : "" %>"/>
 
       <label for="phone">Phone</label>
       <input
@@ -124,7 +124,7 @@
       <label for="batch">Batch</label>
       <select id="batch" name="batchId" class="form-select">
         <option value="">-- Select Batch --</option>
-        <% if (batch != null) {
+        <% if (batches != null) {
             for (Batch batch : batches) { %>
           <option value="<%= batch.getId() %>"
             <%= (editing && participant.getBatch() != null && participant.getBatch().getId() == batch.getId()) ? "selected" : "" %>>

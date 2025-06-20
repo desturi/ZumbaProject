@@ -89,7 +89,7 @@
             <%
                 List<Participant> participants = (List<Participant>) request.getAttribute("listParticipant");
                 if (participants != null) {
-                    for (Participant participants : participants) {
+                    for (Participant participant : participants) {
             %>
                 <tr>
                     <td><%= participant.getName() %></td>
@@ -98,7 +98,7 @@
                     <td><%= participant.getBatch() %></td>
                     <td>
                         <% if (participant.getBatch() != null) { %>
-                            <span class="batch-tag"><%= participants.getBatch().getName() %></span>
+                            <span class="batch-tag"><%= participant.getBatch().getName() %></span>
                         <% } else { %>
                             <span class="no-batch">No batch</span>
                         <% } %>

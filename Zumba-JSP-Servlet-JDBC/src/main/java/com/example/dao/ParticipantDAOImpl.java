@@ -7,18 +7,18 @@ import java.util.*;
 
 public class ParticipantDAOImpl implements ParticipantDAO{
     // JDBC URL pointing at the file you created above:
-    private final String jdbcURL = "jdbc:sqlite:/Users/deepa/BackendCapstoneProjects/zumba.db";
+    private final String jdbcURL = "jdbc:sqlite:zumba.db";
     private final BatchDAO batchDAO = new BatchDAOImpl();
 
     @Override
     public void addParticipant(Participant participant) throws SQLException {
-        String sql = "INSERT INTO participant(name, phone, email, batch_id) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO participants(name, phone, email, batch_id) VALUES(?,?,?,?)";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, participant.getName());
             ps.setString(2, participant.getPhone());
             ps.setString(3, participant.getEmail());
-            ps.setObject(3, participant.getBatch() != null ? participant.getBatch().getClass() : null); //check this line
+            ps.setObject(3, participant.getBatch() != null ? participant.getBatch().getId() : null);
             ps.executeUpdate();
         }
     }
@@ -47,8 +47,9 @@ public class ParticipantDAOImpl implements ParticipantDAO{
                         rs.getString("name"),
                         rs.getString("phone"),
                         rs.getString("email"),
-                        batch == null ? 0 : batch.getId() //getId was suggested and I added
+                        batch == null ? 0 : batch.getId()
                 );
+                participant.setBatch(batch);
                 list.add(participant);
             }
         }
@@ -76,7 +77,8 @@ public class ParticipantDAOImpl implements ParticipantDAO{
             stmt.setString(1, participant.getName());
             stmt.setString(2, participant.getPhone());
             stmt.setString(3, participant.getEmail());
-            stmt.setInt(4, participant.getBatch_id());
+            stmt.setObject(4, participant.getBatch() != null ? participant.getBatch().getId() : null);
+            stmt.setInt(5, participant.getId());
            return stmt.executeUpdate() > 0;
         }
     }
@@ -100,13 +102,15 @@ public class ParticipantDAOImpl implements ParticipantDAO{
                                 rs.getString("batch_description")
                         );
                     }
-                    return new Participant(
+                    Participant participant = new Participant(
                             rs.getInt("id"),
                             rs.getString("name"),
                             rs.getString("phone"),
                             rs.getString("email"),
-                            batch == null ? 0 : batch.getId() //getId was suggested and I added
+                            batch == null ? 0 : batch.getId()
                     );
+                    participant.setBatch(batch);
+                    return participant;
                 }
                 return null;
             }
@@ -117,7 +121,7 @@ public class ParticipantDAOImpl implements ParticipantDAO{
     public List<Participant> getParticipantByBatch(int batchId) throws SQLException {
         List<Participant> list = new ArrayList<>();
         String sql = "SELECT p.id, p.name, p.phone, p.email, p.batch_id, b.name as batch_name, b.description as batch_description " +
-                "FROM participant p " +
+                "FROM participants p " +
                 "LEFT JOIN batches b ON p.batch_id = b.id " +
                 "WHERE p.batch_id = ?";
         try (Connection c = DriverManager.getConnection(jdbcURL);
@@ -135,8 +139,9 @@ public class ParticipantDAOImpl implements ParticipantDAO{
                             rs.getString("name"),
                             rs.getString("phone"),
                             rs.getString("email"),
-                            batch.getId() //getId was suggested and I added
+                            batch.getId()
                     );
+                    participant.setBatch(batch);
                     list.add(participant);
                 }
             }

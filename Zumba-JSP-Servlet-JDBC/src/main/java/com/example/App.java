@@ -15,7 +15,7 @@ public class App {
         Tomcat tomcat = new Tomcat();
 
         // 1) HTTP port
-        int port = 8080;
+        int port = 8081;
         tomcat.setPort(port);
         tomcat.getConnector();
         System.out.println("Connector created at port " + port);
@@ -39,7 +39,8 @@ public class App {
         // 4) Start!
         System.out.println("Tomcat starting");
         tomcat.start();
-        System.out.println(STR."Tomcat started successfully. Visit http://localhost:\{port}\{contextPath}/");
+        System.out.println("Tomcat started successfully. Visit http://localhost:"
+                + port + contextPath + "/");
         tomcat.getServer().await();
     }
 

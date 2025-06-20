@@ -1,8 +1,9 @@
 package com.example.servlet;
+
 import com.example.dao.ParticipantDAO;
+import com.example.dao.ParticipantDAOImpl;
 import com.example.dao.BatchDAO;
 import com.example.dao.BatchDAOImpl;
-import com.example.dao.ParticipantDAOImpl;
 import com.example.model.Participant;
 import com.example.model.Batch;
 
@@ -89,7 +90,7 @@ public class ParticipantServlet extends HttpServlet{
                 }
                 participantDAO.addParticipant(participant);
             }
-            resp.sendRedirect(req.getContextPath() + "/participant");
+            resp.sendRedirect(req.getContextPath() + "/participants");
         }
         catch (SQLException e) {
             throw new ServletException("Database error in ParticipantServlet", e);
