@@ -15,7 +15,7 @@ public class App {
         Tomcat tomcat = new Tomcat();
 
         // 1) HTTP port
-        int port = 6000;
+        int port = 8082;
         tomcat.setPort(port);
         tomcat.getConnector();
         System.out.println("Connector created at port " + port);

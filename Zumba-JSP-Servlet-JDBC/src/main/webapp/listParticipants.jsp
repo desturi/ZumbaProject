@@ -114,5 +114,9 @@
             %>
         </table>
     </div>
+
+    <p>
+        <a href="batches">← Back to Batches</a>
+      </p>
 </body>
 </html>

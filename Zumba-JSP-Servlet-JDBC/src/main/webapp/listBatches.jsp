@@ -77,7 +77,7 @@
   </table>
 
   <p class="add-batch">
-    <a href="addBatches.jsp">Add New Batch →</a>
+    <a href="addBatch.jsp">Add New Batch →</a>
   </p>
 
   <p>

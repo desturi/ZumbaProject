@@ -48,8 +48,8 @@ public class BatchDAOImpl implements BatchDAO{
             ps.executeUpdate();
         }
 
-        // Then delete the category
-        String sql = "DELETE FROM categories WHERE id = ?";
+        // Then delete the batch
+        String sql = "DELETE FROM batches WHERE id = ?";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -73,7 +73,7 @@ public class BatchDAOImpl implements BatchDAO{
     //getBatch
     @Override
     public Batch getBatch(int id) throws SQLException {
-        String sql = "SELECT id, name, description FROM categories WHERE id = ?";
+        String sql = "SELECT id, name, description FROM batches WHERE id = ?";
         try (Connection c = DriverManager.getConnection(jdbcURL);
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -89,6 +89,4 @@ public class BatchDAOImpl implements BatchDAO{
             }
         }
     }
-
-
 }
